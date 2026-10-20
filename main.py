@@ -32,8 +32,8 @@ Splice_sim v%s
 def check_config(config):
     for section in ['dataset_name', 'mappers', 'genome_fa', 'gene_gff', 'isoform_mode']:
         assert section in config, "Missing configuration section %s" % section
-    if 'transcripts' not in config:
-        assert "transcript_data" in config, "Transcript data needs to be configured either in config file ('transcripts' section) or in an external file referenced via 'transcript_data'"
+    #if 'transcripts' not in config:
+    #    assert "transcript_data" in config, "Transcript data needs to be configured either in config file ('transcripts' section) or in an external file referenced via 'transcript_data'"
 
 
 def init_logging(config, outdir):

@@ -17,8 +17,9 @@ params.mappers=[:]
  */
 process build_model {
 
-    module 'python/3.7.2-gcccore-8.2.0'
+     
     publishDir "sim/reference_model", mode: 'copy'
+	container = '/mnt/shared/scratch/dfreebur/PhD/rna_modifications/splice_sim/splice_sim_latest.sif'
     input:
     output:
     	file("${params.dataset_name}.model") into model_file1, model_file2
@@ -37,8 +38,8 @@ process build_model {
  * simulate reads
  */
 process simulate_reads {
-    module 'art/2016.06.05-gcc-7.3.0-2.30:python/3.7.2-gcccore-8.2.0:htslib/1.10.2-gcccore-7.3.0:samtools/1.10-foss-2018b'
     publishDir "sim/bams_truth", mode: 'copy'
+	container = '/mnt/shared/scratch/dfreebur/PhD/rna_modifications/splice_sim/splice_sim_latest.sif'
     input:
     	file(isoform_fasta) from isoform_fasta
     	file(model_file) from model_file1
@@ -83,8 +84,10 @@ process simulate_reads {
 	    	# add md tags and update index
 	    	for bam in *.bam
 	    	do
-	    		samtools calmd --threads ${task.cpus} -b \${bam} ${params.genome_fa} > tmp.bam && mv tmp.bam \${bam}
-	    		samtools index \${bam}
+	    		samtools calmd --threads 2 -b \${bam} ${params.genome_fa} | samtools sort -o \${bam}.sorted.bam
+				mv \${bam}.sorted.bam \${bam}
+				samtools index \${bam}
+
 	    	done
 
 	    	# rm sam file as it might be huge
@@ -98,8 +101,8 @@ process simulate_reads {
  */
 process map_star {
     tag "$fq"
-    module 'star/2.7.1a-foss-2018b:sambamba/0.6.6'
     publishDir "sim/bams_star", mode: 'copy'
+	container = '/mnt/shared/scratch/dfreebur/PhD/rna_modifications/splice_sim/splice_sim_latest.sif'
 
     when:
     	params.mappers.STAR && params.create_bams
@@ -131,8 +134,8 @@ process map_star {
  */
 process map_hisat_3n {
     tag "$fq"
-    module 'python/3.7.2-gcccore-8.2.0:sambamba/0.6.6'
     publishDir "sim/bams_hisat3n", mode: 'copy'
+	container = '/mnt/shared/scratch/dfreebur/PhD/rna_modifications/splice_sim/splice_sim_latest.sif'
 
     when:
     	params.mappers.HISAT3N && params.create_bams
@@ -165,8 +168,8 @@ process map_hisat_3n {
 process map_merangs {
 	  tag "$fq"
     // NOTE that merangs does not support newer versions of STAR
-    module 'star/2.5.2a-foss-2018b:python/3.7.2-gcccore-8.2.0:sambamba/0.6.6:biobambam2/2.0.87-foss-2018b:samtools/1.10-foss-2018b'
     publishDir "sim/bams_merangs", mode: 'copy'
+	container = '/mnt/shared/scratch/dfreebur/PhD/rna_modifications/splice_sim/splice_sim_latest.sif'
 
     when:
     	params.mappers.MERANGS && params.create_bams
@@ -203,8 +206,8 @@ process map_merangs {
  */
 process map_segemehl {
     tag "$fq"
-    module 'python/3.7.2-gcccore-8.2.0:sambamba/0.6.6'
     publishDir "sim/bams_segemehl", mode: 'copy'
+	container = '/mnt/shared/scratch/dfreebur/PhD/rna_modifications/splice_sim/splice_sim_latest.sif'
 
 	when:
     	params.mappers.SEGEMEHL && params.create_bams
@@ -236,8 +239,9 @@ process map_segemehl {
  */
 process postprocess_bams {
 	//cache false
-	module 'python/3.7.2-gcccore-8.2.0'
+	 
 	publishDir "sim/final_bams", mode: 'copy'
+	container = '/mnt/shared/scratch/dfreebur/PhD/rna_modifications/splice_sim/splice_sim_latest.sif'
 	when:
 		params.create_bams
 	input:

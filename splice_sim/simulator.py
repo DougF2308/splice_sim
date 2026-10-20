@@ -39,8 +39,12 @@ def postfilter_bam(config, bam_in, out_dir):
             f_reads += 1
             continue
         # map isoform to color
-        true_tid, true_strand, true_isoform, read_tag, true_chr, true_start, true_cigar, n_seqerr, n_converted, is_converted_read = read.query_name.split(
-            '_')
+        parts = read.query_name.split('_')
+        if len(parts) < 10:
+            raise ValueError(f"Unexpected read name format: {read.query_name}")
+        true_tid = '_'.join(parts[:-9])  # join everything *before* the last 9 fields
+        true_strand, true_isoform, read_tag, true_chr, true_start, true_cigar, n_seqerr, n_converted, is_converted_read = parts[-9:]
+
         if (true_isoform, true_strand) in isoform_colors:
             read.set_tag(tag='YC', value=isoform_colors[true_isoform, true_strand], value_type="Z")
         mapped_out.write(read)
@@ -74,7 +78,10 @@ def transcript2genome_bam(m, transcript_bam_file, out_bam, overwrite=False):
         for r in sam.fetch(until_eof=True):
             stats['input_reads'] += 1
             # e.g. 'ENSMUST00000099151.5_+_mat_0-400'. tag ('0-400') consists of running number from 'abundance' and running number form ART
-            tid, transcript_strand, iso_id, tag = r.query_name.split("_")
+            parts = r.query_name.rsplit("_", 3)
+            tid = parts[0]
+            transcript_strand, iso_id, tag = parts[1:]
+
             read_strand = "-" if r.is_reverse else "+"
             stats['input_reads_' + read_strand] += 1
             if not transcript_strand == read_strand:

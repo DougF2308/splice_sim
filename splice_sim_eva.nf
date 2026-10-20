@@ -22,7 +22,7 @@ Channel.fromFilePairs("${params.final_bam_dir}*.{bam,bai}", flat:true) { file ->
  */
 process evaluate_bams {
     tag "$name"
-    module 'python/3.7.2-gcccore-8.2.0:htslib/1.10.2-gcccore-7.3.0'
+    container = '/mnt/shared/scratch/dfreebur/PhD/rna_modifications/splice_sim/splice_sim_latest.sif'
     publishDir "eva/counts", mode: 'copy'
     input:
     	set name, file(bam), file(bai) from final_bams
@@ -54,7 +54,7 @@ process evaluate_bams {
 process extract_feature_metadata {
 	tag "$name"
     cpus 1
-    module 'python/3.7.2-gcccore-8.2.0:htslib/1.10.2-gcccore-7.3.0'
+    container = '/mnt/shared/scratch/dfreebur/PhD/rna_modifications/splice_sim/splice_sim_latest.sif'
     publishDir "eva/meta", mode: 'copy'
     cache true
     output:
@@ -79,7 +79,7 @@ process extract_feature_metadata {
  * preprocess results
  */
 process preprocess_results {
-    module 'r/4.0.2-foss-2018b'
+    container = 'oras://community.wave.seqera.io/library/r-base_r-data.table_r-dplyr_r-dtplyr_pruned:4ba09d83678c507b'
     publishDir "eva/results", mode: 'copy'
     cache true
     input:

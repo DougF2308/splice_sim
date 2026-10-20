@@ -1,0 +1,37 @@
+{
+    "dataset_name": "NM-16_test",
+    "splice_sim_cmd": "python /mnt/shared/scratch/dfreebur/PhD/rna_modifications/splice_sim/main.py",
+    "splice_eva_preprocess_cmd": "Rscript --vanilla /mnt/shared/scratch/dfreebur/PhD/rna_modifications/splice_sim/src/main/R/splice_sim/preprocess_results.R", 
+    "gene_gff": "/mnt/shared/scratch/dfreebur/PhD/cris_rice_rtd/result/rice_rtd_nipponbare_merged_reference_merge_ids/htsm_rtd_ref_inf_merged.sorted.gff3.gz",
+    "genome_fa": "/mnt/shared/scratch/dfreebur/PhD/cris_rice_rtd/data/genomes/new_nipponbare/osa1_r7.asm.fa",
+    "genome_chromosome_sizes": "/mnt/shared/scratch/dfreebur/PhD/cris_rice_rtd/data/genomes/new_nipponbare/osa1_r7.asm.fa.chromsizes",
+    "genome_mappability": "/mnt/shared/scratch/dfreebur/PhD/cris_rice_rtd/data/genomes/new_nipponbare/genmap_mappability/genmap_mappability.bedgraph",
+    "transcript_data": "/mnt/shared/scratch/dfreebur/PhD/cris_rice_rtd/result/rice_rtd_nipponbare_merged_reference_merge_ids/htsm_rtd_ref_inf_merged.0.01_transcripts.json",
+    "transcript_ids": "/mnt/shared/scratch/dfreebur/PhD/cris_rice_rtd/result/rice_rtd_nipponbare_merged_reference_merge_ids/htsm_rtd_ref_inf_merged.0.01_transcripts.tsv",  
+    "isoform_mode": "1:1",
+    "frac_old_mature": 0,
+    "condition": {
+        "ref": "A", 
+        "alt": "G", 
+        "conversion_rates": [ 0.02, 0.04 ], 
+        "base_coverage": 10  
+    },
+    "mappers": {
+        "STAR": {
+            "star_cmd": "STAR",
+            "star_genome_idx": "/mnt/shared/scratch/dfreebur/PhD/cris_rice_rtd/data/genomes/new_nipponbare/new_nipponbare_genome_star_index"
+            },
+        "HISAT3N": {
+            "hisat3n_cmd": "hisat-3n",
+            "hisat3n_idx": "/indices/Mus_musculus.GRCm38.dna.primary_assembly"
+            }
+        },
+    "create_tdf": true, 
+    "max_ilen": 17000,
+    "min_abundance": 2,
+    "random_seed": 1234,
+    "readlen": 150,
+    "write_reads": true,
+    "write_intron_bam": true,
+    "additional_art_params": ""
+}

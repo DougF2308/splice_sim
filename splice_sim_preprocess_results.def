@@ -1,0 +1,33 @@
+Bootstrap: docker
+From: rocker/r-base:latest
+
+%labels
+    Author dfreebur
+    Version v1.0
+
+%post
+    ## Update and install system dependencies
+    apt-get update && apt-get install -y \
+        libcurl4-openssl-dev \
+        libssl-dev \
+        libxml2-dev \
+        libfontconfig1-dev \
+        libfreetype6-dev \
+        libharfbuzz-dev \
+        libfribidi-dev \
+        libpng-dev \
+        libtiff5-dev \
+        libjpeg-dev \
+        build-essential \
+        git \
+        wget \
+        curl \
+        r-base-dev \
+        gdebi-core
+
+    ## Install R packages
+    Rscript -e "install.packages(c('data.table', 'tidyr', 'dplyr', 'dtplyr', 'rjson', 'tictoc', 'readr', 'tibble', 'stringr'), repos='https://cloud.r-project.org')"
+
+%runscript
+    exec "$@"
+
